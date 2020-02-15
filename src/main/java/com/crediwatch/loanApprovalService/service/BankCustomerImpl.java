@@ -1,29 +1,25 @@
 package com.crediwatch.loanApprovalService.service;
 
-import com.crediwatch.loanApprovalService.LoanApprovalApplication;
 import com.crediwatch.loanApprovalService.model.ApprovalRequest;
 import com.crediwatch.loanApprovalService.model.BankCustomer;
 import com.crediwatch.loanApprovalService.model.CustomerForm;
 import com.crediwatch.loanApprovalService.repository.BankCustomerDao;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
+import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class BankCustomerImpl {
+public class BankCustomerImpl implements IBankCustomer{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BankCustomerImpl.class);
 
@@ -35,6 +31,7 @@ public class BankCustomerImpl {
     @Autowired
     BankCustomerDao bankCustomerDao;
 
+    @Override
     public void saveBankCustomers() throws IOException {
         List<String[]> allData = null;
         BankCustomer bankCustomer;
@@ -73,6 +70,7 @@ public class BankCustomerImpl {
         LOGGER.info("Succussfully uploaded all the records");
     }
 
+    @Override
     public Boolean verify(CustomerForm customerForm) {
         Optional<BankCustomer> byCin = bankCustomerDao.findById(customerForm.getCin());
 
@@ -92,6 +90,7 @@ public class BankCustomerImpl {
         return false;
     }
 
+    @Override
     public Boolean approveLoan(ApprovalRequest approvalRequest) {
         Optional<BankCustomer> byCin = bankCustomerDao.findById(approvalRequest.getCin());
 
@@ -110,17 +109,20 @@ public class BankCustomerImpl {
         Integer assetCapital = Integer.parseInt(bankCustomer.getAuthorizedCapital()) -
                 Integer.parseInt(bankCustomer.getPaidUpCapital());
 
-        if(assetCapital <= 0){
+        int loanAmtPerYear = Integer.parseInt(approvalRequest.getLoanAmount())/
+                Integer.parseInt(approvalRequest.getDuration());
+
+        if(assetCapital < loanAmtPerYear){
             return false;
         }
 
         Integer normalizedAssetCapital = (assetCapital - MIN_ASSET_CAPITAL)/(MAX_ASSET_CAPITAL - MIN_ASSET_CAPITAL);
 
-        double score = 0.717*Double.parseDouble(approvalRequest.getX1()) +
-                0.847*Double.parseDouble((approvalRequest.getX2())) +
-                3.107*Double.parseDouble((approvalRequest.getX3())) +
-                0.420*Double.parseDouble((approvalRequest.getX4())) +
-                0.998*Double.parseDouble((approvalRequest.getX5())) +
+        double score = 0.717*Double.parseDouble(bankCustomer.getX1()) +
+                0.847*Double.parseDouble((bankCustomer.getX2())) +
+                3.107*Double.parseDouble((bankCustomer.getX3())) +
+                0.420*Double.parseDouble((bankCustomer.getX4())) +
+                0.998*Double.parseDouble((bankCustomer.getX5())) +
                 normalizedAssetCapital;
 
         if(score >= SCORE_THRESHOLD){
@@ -130,6 +132,7 @@ public class BankCustomerImpl {
         return false;
     }
 
+    @Override
     public List<BankCustomer> fetchAllData() {
         return bankCustomerDao.findAll();
     }

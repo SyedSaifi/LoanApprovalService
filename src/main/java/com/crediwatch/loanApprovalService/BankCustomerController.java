@@ -1,4 +1,4 @@
-package com.crediwatch.loanApprovalService.controller;
+package com.crediwatch.loanApprovalService;
 
 import com.crediwatch.loanApprovalService.model.ApprovalRequest;
 import com.crediwatch.loanApprovalService.model.BankCustomer;
@@ -16,10 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author ML Avengers
@@ -50,9 +47,11 @@ public class BankCustomerController {
     @ApiOperation(value = "This api returns all the records from mongodb as document.",
             notes = "Requires upload path url", authorizations = {@Authorization(value="basicAuth")})
     @GetMapping(value = "/fetchAllData")
-    public List<BankCustomer> fetchAllData(){
+    public ResponseEntity fetchAllData(){
         LOGGER.info("Fetching all the records from DB.");
-            return bankCustomerService.fetchAllData();
+
+        List<BankCustomer> bankCustomers = bankCustomerService.fetchAllData();
+        return new ResponseEntity<>(bankCustomers, HttpStatus.OK);
     }
 
     @ApiOperation(value = "This api verifies if the customer exist is valid",
