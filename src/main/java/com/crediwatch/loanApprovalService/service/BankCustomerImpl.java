@@ -6,7 +6,6 @@ import com.crediwatch.loanApprovalService.model.CustomerForm;
 import com.crediwatch.loanApprovalService.repository.BankCustomerDao;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVReaderBuilder;
-import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class BankCustomerImpl implements IBankCustomer{
     BankCustomerDao bankCustomerDao;
 
     @Override
-    public void saveBankCustomers() throws IOException {
+    public String saveBankCustomers() throws IOException {
         List<String[]> allData = null;
         BankCustomer bankCustomer;
         List<BankCustomer> bankCustomers = new ArrayList<>();
@@ -68,13 +67,16 @@ public class BankCustomerImpl implements IBankCustomer{
         }
         bankCustomerDao.saveAll(bankCustomers);
         LOGGER.info("Succussfully uploaded all the records");
+        return "SUCCESS";
     }
 
     @Override
     public Boolean verify(CustomerForm customerForm) {
-        Optional<BankCustomer> byCin = bankCustomerDao.findById(customerForm.getCin());
+        if(customerForm == null)
+            return false;
 
-        if(byCin.get() == null){
+        Optional<BankCustomer> byCin = bankCustomerDao.findById(customerForm.getCin());
+        if(!byCin.isPresent()){
             return false;
         }
 
@@ -92,14 +94,14 @@ public class BankCustomerImpl implements IBankCustomer{
 
     @Override
     public Boolean approveLoan(ApprovalRequest approvalRequest) {
-        Optional<BankCustomer> byCin = bankCustomerDao.findById(approvalRequest.getCin());
+        if(approvalRequest == null || approvalRequest.getDuration().isEmpty() || approvalRequest.getLoanAmount().isEmpty())
+            return false;
 
-        if(byCin.get() == null){
+        Optional<BankCustomer> byCin = bankCustomerDao.findById(approvalRequest.getCin());
+        if(!byCin.isPresent()){
             return false;
         }
-
         BankCustomer bankCustomer = byCin.get();
-
         if(bankCustomer.getCompanyStatus().equalsIgnoreCase(NOT_AVAILABLE_FOR_EFILING)){
             LOGGER.info("The company {} is not available for efiling, hence the loan is rejected.",
                     approvalRequest.getCin());

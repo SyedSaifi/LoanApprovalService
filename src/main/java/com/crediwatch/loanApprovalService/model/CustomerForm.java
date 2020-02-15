@@ -1,15 +1,22 @@
 package com.crediwatch.loanApprovalService.model;
 
+import javax.validation.constraints.NotNull;
+
 public class CustomerForm {
 
+    @NotNull
     private String cin;
 
+    @NotNull
     private String email;
 
+    @NotNull
     private String companyClass;
 
+    @NotNull
     private String companyName;
 
+    @NotNull
     private String companyType;
 
     public String getCin() {

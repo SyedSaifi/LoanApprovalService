@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface IBankCustomer {
-    void saveBankCustomers() throws IOException;
+    String saveBankCustomers() throws IOException;
 
     Boolean verify(CustomerForm customerForm);
 

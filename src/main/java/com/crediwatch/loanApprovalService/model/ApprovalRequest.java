@@ -1,11 +1,16 @@
 package com.crediwatch.loanApprovalService.model;
 
+import javax.validation.constraints.NotNull;
+
 public class ApprovalRequest {
 
+    @NotNull
     private String cin;
 
+    @NotNull
     private String duration;
 
+    @NotNull
     private String loanAmount;
 
     public String getCin() {
