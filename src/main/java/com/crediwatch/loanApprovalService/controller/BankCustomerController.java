@@ -1,4 +1,4 @@
-package com.crediwatch.loanApprovalService;
+package com.crediwatch.loanApprovalService.controller;
 
 import com.crediwatch.loanApprovalService.model.ApprovalRequest;
 import com.crediwatch.loanApprovalService.model.BankCustomer;
