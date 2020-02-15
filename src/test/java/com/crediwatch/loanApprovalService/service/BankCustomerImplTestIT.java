@@ -78,19 +78,19 @@ public class BankCustomerImplTestIT {
 
     @Test
     public void testVerifyForInvalidCompanyType() {
-        customerForm.setEmail("INVALID_COMPANY_TYPE");
+        customerForm.setCompanyType("INVALID_COMPANY_TYPE");
         assertFalse(iBankCustomer.verify(customerForm));
     }
 
     @Test
     public void testVerifyForInvalidCompanyName() {
-        customerForm.setEmail("INVALID_COMPANY_NAME");
+        customerForm.setCompanyName("INVALID_COMPANY_NAME");
         assertFalse(iBankCustomer.verify(customerForm));
     }
 
     @Test
     public void testVerifyForInvalidCompanyClass() {
-        customerForm.setEmail("INVALID_COMPANY_CLASS");
+        customerForm.setCompanyClass("INVALID_COMPANY_CLASS");
         assertFalse(iBankCustomer.verify(customerForm));
     }
 
