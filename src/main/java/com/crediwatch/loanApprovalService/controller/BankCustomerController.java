@@ -75,4 +75,16 @@ public class BankCustomerController {
         Boolean approve = bankCustomerService.approveLoan(approvalRequest);
         return new ResponseEntity<>(approve, HttpStatus.OK);
     }
+
+    @ApiOperation(value = "This api post new customer data",
+            notes = "This api post new customer data",
+            authorizations = {@Authorization(value="basicAuth")})
+    @PostMapping(value= "/create-customer")
+    public ResponseEntity createCustomer(@NotNull
+                                 @RequestBody BankCustomer bankCustomer) {
+        Boolean status = bankCustomerService.createCustomer(bankCustomer);
+
+        return new ResponseEntity<>(status, HttpStatus.OK);
+    }
+
 }

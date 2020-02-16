@@ -138,4 +138,15 @@ public class BankCustomerImpl implements IBankCustomer{
     public List<BankCustomer> fetchAllData() {
         return bankCustomerDao.findAll();
     }
+
+    @Override
+    public Boolean createCustomer(BankCustomer bankCustomer){
+        try {
+            bankCustomerDao.save(bankCustomer);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
 }

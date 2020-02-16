@@ -15,4 +15,6 @@ public interface IBankCustomer {
     Boolean approveLoan(ApprovalRequest approvalRequest);
 
     List<BankCustomer> fetchAllData();
+
+    Boolean createCustomer(BankCustomer bankCustomer);
 }
