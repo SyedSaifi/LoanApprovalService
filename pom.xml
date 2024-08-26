@@ -18,7 +18,7 @@
         <relativePath/>
     </parent>
     <properties>
-        <springfox-swagger.version>2.9.1</springfox-swagger.version>
+        <springfox-swagger.version>2.10.0</springfox-swagger.version>
     </properties>
     <dependencies>
         <dependency>
